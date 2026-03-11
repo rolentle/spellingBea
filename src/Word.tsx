@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react"
+import { useState, useMemo } from "react";
 
-function Word({ word }: Readonly<{ word: string }>) {
+function Word({ word, active, setActive }: Readonly<{ word: string, active: boolean, setActive: () => void }>) {
     const [inputWord, setInputWord] = useState("");
-    const utterance = new SpeechSynthesisUtterance(word);
-    useEffect(() => {
-        if (inputWord.toLowerCase() === word.toLowerCase()) {
-            alert("Correct!")
+    const utterance = useMemo(() => new SpeechSynthesisUtterance(word), [word]);
+    const checkAnswer = () => {        if (inputWord.toLowerCase() === word.toLowerCase()) {
+            setActive()
         }
-    }, [inputWord, word])
-
+    }
 
     return (
-        <div>
+        <div style={ { display: active ? "block" : "none" } }>
             <button onClick={() => speechSynthesis.speak(utterance)}>Speak</button>
             <input
                 type="text"
@@ -19,10 +17,10 @@ function Word({ word }: Readonly<{ word: string }>) {
                 value={inputWord}
                 onChange={(e) => setInputWord(e.target.value)}
             />
-            <button onClick={() => console.log(inputWord)}>Check Answer</button>
+            <button onClick={checkAnswer}>Check Answer</button>
 
         </div>
     )
 }
 
-export default Word
+export default Word;
