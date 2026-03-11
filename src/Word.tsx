@@ -1,15 +1,22 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import './Word.css'
 
 function Word({ word, active, setActive }: Readonly<{ word: string, active: boolean, setActive: () => void }>) {
     const [inputWord, setInputWord] = useState("");
     const utterance = useMemo(() => new SpeechSynthesisUtterance(word), [word]);
+    useEffect(() => {
+        if (active) {
+            speechSynthesis.speak(utterance);
+        }
+    }, [active, utterance]);
+
     const checkAnswer = () => {        if (inputWord.toLowerCase() === word.toLowerCase()) {
             setActive()
         }
     }
 
     return (
-        <div style={ { display: active ? "block" : "none" } }>
+        <div className="card" style={ { display: active ? "block" : "none" } }>
             <button onClick={() => speechSynthesis.speak(utterance)}>Speak</button>
             <input
                 type="text"
